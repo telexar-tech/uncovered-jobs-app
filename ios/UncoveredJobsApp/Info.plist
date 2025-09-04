@@ -32,7 +32,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -49,5 +49,24 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>LexendExaBlack.ttf</string>
+		<string>LexendExaBold.ttf</string>
+		<string>LexendExaExtraBold.ttf</string>
+		<string>LexendExaExtraLight.ttf</string>
+		<string>LexendExaLight.ttf</string>
+		<string>LexendExaMedium.ttf</string>
+		<string>LexendExaRegular.ttf</string>
+		<string>LexendExaSemiBold.ttf</string>
+		<string>LexendExaThin.ttf</string>
+		<string>ManropeBold.ttf</string>
+		<string>ManropeExtraBold.ttf</string>
+		<string>ManropeExtraLight.ttf</string>
+		<string>ManropeLight.ttf</string>
+		<string>ManropeMedium.ttf</string>
+		<string>ManropeRegular.ttf</string>
+		<string>ManropeSemiBold.ttf</string>
+	</array>
 </dict>
 </plist>

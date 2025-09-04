@@ -1,0 +1,69 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/LexendExa/LexendExaBlack.ttf",
+      "sha1": "3ea08c28a51bb22eca93b2252754b0225a24ec5e"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaBold.ttf",
+      "sha1": "023033dd0b3862ee81ebbc20174eabf4952fb642"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaExtraBold.ttf",
+      "sha1": "ba008aee138c159302539f3811297d0ce526f682"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaExtraLight.ttf",
+      "sha1": "ec76305267d8c51ad5334832aaa55fc51802d464"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaLight.ttf",
+      "sha1": "ecf481950128f7b9dad57d69e19f30cf928d29fc"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaMedium.ttf",
+      "sha1": "f42419cbf91b33fceaf611e2e9e9d655a2adc470"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaRegular.ttf",
+      "sha1": "c818e1cc8fd641c9332985795f1d2513708438f2"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaSemiBold.ttf",
+      "sha1": "c1839dbe6d29cd7dc7d1ca2a29cf4c069134fc5e"
+    },
+    {
+      "path": "assets/fonts/LexendExa/LexendExaThin.ttf",
+      "sha1": "6b362ebe7518c7a9b79a7bcfba8986e9411e7af9"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeBold.ttf",
+      "sha1": "dbc0b874ad8b9f3415d0e9b4e22907890ca72327"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeExtraBold.ttf",
+      "sha1": "df131208d5c08ff782fbf12c264f473d8dacd83e"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeExtraLight.ttf",
+      "sha1": "bc714297659d8d6d987142c11987df3fe6f04b4e"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeLight.ttf",
+      "sha1": "27d7897032dc0615ace6c53fd292107ae53280e5"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeMedium.ttf",
+      "sha1": "b5e2c6265e0919163142bb8eac9b6450fb91f920"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeRegular.ttf",
+      "sha1": "3f36e4904a42d23273ac346047c1b6bcf067ccfc"
+    },
+    {
+      "path": "assets/fonts/Manrope/ManropeSemiBold.ttf",
+      "sha1": "f7a023cd6c102b2ffa8bf729579552445970d62d"
+    }
+  ]
+}

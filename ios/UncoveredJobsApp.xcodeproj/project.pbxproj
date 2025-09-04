@@ -12,6 +12,22 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		FC2F997A18422C0F83CCE8D9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		37892928031043EEB978DA3F /* LexendExaBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F93BF5035F3488DA6E48BA7 /* LexendExaBlack.ttf */; };
+		E889965F4E0241F3ACA1F79A /* LexendExaBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4EE271A05994A2CACC1AA44 /* LexendExaBold.ttf */; };
+		FEDA6C7239674515A822C3C5 /* LexendExaExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 679174BE0F124336AA5D09CD /* LexendExaExtraBold.ttf */; };
+		079C550EE65F44BABBDFF3C6 /* LexendExaExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8C19006DB8924F19A433A4C4 /* LexendExaExtraLight.ttf */; };
+		619488D0AA5649648DBA7002 /* LexendExaLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4473538437144B7C9B803EAC /* LexendExaLight.ttf */; };
+		9B47BF9F03A9436887F5D9A1 /* LexendExaMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7E5EF03A9044C6B8293B36F /* LexendExaMedium.ttf */; };
+		C7726FACFA25417B83CCE802 /* LexendExaRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9068226AF65B4CD188B3726E /* LexendExaRegular.ttf */; };
+		D1F0071DCEF7413391BA78D9 /* LexendExaSemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 332938BCE66747A59B1D46CD /* LexendExaSemiBold.ttf */; };
+		6E10EE327E1D4FD488BED7E3 /* LexendExaThin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96C0935B4C554FBCA3A80C0F /* LexendExaThin.ttf */; };
+		8C801C8CDAF4415EA564BAC7 /* ManropeBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 899E124461404DBFBFE477FF /* ManropeBold.ttf */; };
+		7F4FF83F22D5478883E0A554 /* ManropeExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3588B9081B6403A9C916665 /* ManropeExtraBold.ttf */; };
+		96AB03BE500043088953C6D2 /* ManropeExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0FC1DA4187AC405DB6E18E1E /* ManropeExtraLight.ttf */; };
+		B4F48CC9C89A44D6A0132DC2 /* ManropeLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFACBFAD248045C683601D60 /* ManropeLight.ttf */; };
+		AA2ABA4DCC0548BDACF32258 /* ManropeMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7222188F4D0C42E6BE346180 /* ManropeMedium.ttf */; };
+		A59300EE5AB349018C2E5CF3 /* ManropeRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F9D79E9C8194483A39DDACC /* ManropeRegular.ttf */; };
+		E14667F577E444608FA06EAA /* ManropeSemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EC8CEDA136141BBB1B31F47 /* ManropeSemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +41,22 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = UncoveredJobsApp/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = UncoveredJobsApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		3F93BF5035F3488DA6E48BA7 /* LexendExaBlack.ttf */ = {isa = PBXFileReference; name = "LexendExaBlack.ttf"; path = "../assets/fonts/LexendExa/LexendExaBlack.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E4EE271A05994A2CACC1AA44 /* LexendExaBold.ttf */ = {isa = PBXFileReference; name = "LexendExaBold.ttf"; path = "../assets/fonts/LexendExa/LexendExaBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		679174BE0F124336AA5D09CD /* LexendExaExtraBold.ttf */ = {isa = PBXFileReference; name = "LexendExaExtraBold.ttf"; path = "../assets/fonts/LexendExa/LexendExaExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8C19006DB8924F19A433A4C4 /* LexendExaExtraLight.ttf */ = {isa = PBXFileReference; name = "LexendExaExtraLight.ttf"; path = "../assets/fonts/LexendExa/LexendExaExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4473538437144B7C9B803EAC /* LexendExaLight.ttf */ = {isa = PBXFileReference; name = "LexendExaLight.ttf"; path = "../assets/fonts/LexendExa/LexendExaLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D7E5EF03A9044C6B8293B36F /* LexendExaMedium.ttf */ = {isa = PBXFileReference; name = "LexendExaMedium.ttf"; path = "../assets/fonts/LexendExa/LexendExaMedium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9068226AF65B4CD188B3726E /* LexendExaRegular.ttf */ = {isa = PBXFileReference; name = "LexendExaRegular.ttf"; path = "../assets/fonts/LexendExa/LexendExaRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		332938BCE66747A59B1D46CD /* LexendExaSemiBold.ttf */ = {isa = PBXFileReference; name = "LexendExaSemiBold.ttf"; path = "../assets/fonts/LexendExa/LexendExaSemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		96C0935B4C554FBCA3A80C0F /* LexendExaThin.ttf */ = {isa = PBXFileReference; name = "LexendExaThin.ttf"; path = "../assets/fonts/LexendExa/LexendExaThin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		899E124461404DBFBFE477FF /* ManropeBold.ttf */ = {isa = PBXFileReference; name = "ManropeBold.ttf"; path = "../assets/fonts/Manrope/ManropeBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A3588B9081B6403A9C916665 /* ManropeExtraBold.ttf */ = {isa = PBXFileReference; name = "ManropeExtraBold.ttf"; path = "../assets/fonts/Manrope/ManropeExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0FC1DA4187AC405DB6E18E1E /* ManropeExtraLight.ttf */ = {isa = PBXFileReference; name = "ManropeExtraLight.ttf"; path = "../assets/fonts/Manrope/ManropeExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DFACBFAD248045C683601D60 /* ManropeLight.ttf */ = {isa = PBXFileReference; name = "ManropeLight.ttf"; path = "../assets/fonts/Manrope/ManropeLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7222188F4D0C42E6BE346180 /* ManropeMedium.ttf */ = {isa = PBXFileReference; name = "ManropeMedium.ttf"; path = "../assets/fonts/Manrope/ManropeMedium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3F9D79E9C8194483A39DDACC /* ManropeRegular.ttf */ = {isa = PBXFileReference; name = "ManropeRegular.ttf"; path = "../assets/fonts/Manrope/ManropeRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6EC8CEDA136141BBB1B31F47 /* ManropeSemiBold.ttf */ = {isa = PBXFileReference; name = "ManropeSemiBold.ttf"; path = "../assets/fonts/Manrope/ManropeSemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +107,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				8673CD447DEA4D0882060191 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -97,6 +130,30 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		8673CD447DEA4D0882060191 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				3F93BF5035F3488DA6E48BA7 /* LexendExaBlack.ttf */,
+				E4EE271A05994A2CACC1AA44 /* LexendExaBold.ttf */,
+				679174BE0F124336AA5D09CD /* LexendExaExtraBold.ttf */,
+				8C19006DB8924F19A433A4C4 /* LexendExaExtraLight.ttf */,
+				4473538437144B7C9B803EAC /* LexendExaLight.ttf */,
+				D7E5EF03A9044C6B8293B36F /* LexendExaMedium.ttf */,
+				9068226AF65B4CD188B3726E /* LexendExaRegular.ttf */,
+				332938BCE66747A59B1D46CD /* LexendExaSemiBold.ttf */,
+				96C0935B4C554FBCA3A80C0F /* LexendExaThin.ttf */,
+				899E124461404DBFBFE477FF /* ManropeBold.ttf */,
+				A3588B9081B6403A9C916665 /* ManropeExtraBold.ttf */,
+				0FC1DA4187AC405DB6E18E1E /* ManropeExtraLight.ttf */,
+				DFACBFAD248045C683601D60 /* ManropeLight.ttf */,
+				7222188F4D0C42E6BE346180 /* ManropeMedium.ttf */,
+				3F9D79E9C8194483A39DDACC /* ManropeRegular.ttf */,
+				6EC8CEDA136141BBB1B31F47 /* ManropeSemiBold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -161,6 +218,22 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				FC2F997A18422C0F83CCE8D9 /* PrivacyInfo.xcprivacy in Resources */,
+				37892928031043EEB978DA3F /* LexendExaBlack.ttf in Resources */,
+				E889965F4E0241F3ACA1F79A /* LexendExaBold.ttf in Resources */,
+				FEDA6C7239674515A822C3C5 /* LexendExaExtraBold.ttf in Resources */,
+				079C550EE65F44BABBDFF3C6 /* LexendExaExtraLight.ttf in Resources */,
+				619488D0AA5649648DBA7002 /* LexendExaLight.ttf in Resources */,
+				9B47BF9F03A9436887F5D9A1 /* LexendExaMedium.ttf in Resources */,
+				C7726FACFA25417B83CCE802 /* LexendExaRegular.ttf in Resources */,
+				D1F0071DCEF7413391BA78D9 /* LexendExaSemiBold.ttf in Resources */,
+				6E10EE327E1D4FD488BED7E3 /* LexendExaThin.ttf in Resources */,
+				8C801C8CDAF4415EA564BAC7 /* ManropeBold.ttf in Resources */,
+				7F4FF83F22D5478883E0A554 /* ManropeExtraBold.ttf in Resources */,
+				96AB03BE500043088953C6D2 /* ManropeExtraLight.ttf in Resources */,
+				B4F48CC9C89A44D6A0132DC2 /* ManropeLight.ttf in Resources */,
+				AA2ABA4DCC0548BDACF32258 /* ManropeMedium.ttf in Resources */,
+				A59300EE5AB349018C2E5CF3 /* ManropeRegular.ttf in Resources */,
+				E14667F577E444608FA06EAA /* ManropeSemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
