@@ -1,10 +1,13 @@
 import {
+  Image,
+  ImageSourcePropType,
   Platform,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { SvgProps } from 'react-native-svg';
 import { COLORS } from '../constants/colors';
 import ManropeText from './ManropeText';
 
@@ -13,11 +16,13 @@ type ButtonType = 'primary' | 'secondary' | 'outline';
 interface ButtonProps extends TouchableOpacityProps {
   title?: string;
   buttonType?: ButtonType;
+  icon?: ImageSourcePropType | React.FC<SvgProps>;
 }
 
 const Button: React.FC<ButtonProps> = ({
   title = '',
   buttonType = 'primary',
+  icon: Icon,
   ...props
 }) => {
   const getButtonColors = () => {
@@ -27,13 +32,24 @@ const Button: React.FC<ButtonProps> = ({
       case 'secondary':
         return [COLORS.secondary, COLORS.secondary];
       case 'outline':
-        return ['transparent', 'transparent'];
+        return ['#fff', '#ffff'];
       default:
         return [COLORS.primary, COLORS.secondary];
     }
   };
 
   const isOutline = buttonType === 'outline';
+
+  const renderIcon = () => {
+    if (!Icon) {
+      return null;
+    }
+    if (typeof Icon === 'function') {
+      const { width, height } = styles.icon;
+      return <Icon width={width} height={height} />;
+    }
+    return <Image source={Icon as ImageSourcePropType} style={styles.icon} />;
+  };
 
   return (
     <TouchableOpacity activeOpacity={0.7} {...props}>
@@ -43,7 +59,9 @@ const Button: React.FC<ButtonProps> = ({
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
+        {renderIcon()}
         <ManropeText
+          fontWeight="semiBold"
           style={[styles.buttonText, isOutline && styles.outlineButtonText]}
         >
           {title}
@@ -55,23 +73,25 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
     borderRadius: 50,
     paddingVertical: 15,
     paddingHorizontal: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
     ...Platform.select({
       ios: {
         shadowColor: COLORS.secondary,
         shadowOffset: {
           width: 0,
-          height: 4,
+          height: 2,
         },
         shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowRadius: 4,
       },
       android: {
-        elevation: 3,
+        elevation: 2,
       },
     }),
   },
@@ -81,12 +101,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    lineHeight: 21,
+    fontSize: 18,
+    lineHeight: 23,
   },
   outlineButtonText: {
     color: COLORS.black,
+  },
+  icon: {
+    width: 22,
+    height: 22,
   },
 });
 

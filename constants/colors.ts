@@ -4,6 +4,8 @@ export const COLORS = {
   white: '#FFFFFF',
   black: '#000000',
   grey: '#B3B3B3',
-  violet500:'#0B0515',
-  violet300:'#5C5862',
+  violet500: '#0B0515',
+  violet300: '#5C5862',
+  violet200: '#8F8C93',
+  violet100: '#B3B2B6'
 };

@@ -1,6 +1,6 @@
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { FC, useRef, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   Pressable,
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants/colors';
+import { storeData } from '../utils/storage';
 import Button from './Button';
 import LexendText from './LexendText';
 import ManropeText from './ManropeText';
@@ -97,6 +98,7 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
 
   const { width } = useWindowDimensions();
+  const navigation = useNavigation();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const lastSlideIndex = SLIDE_DATA.length - 1;
@@ -113,7 +115,7 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
 
   const handleNextPress = () => {
     if (activeIndex === lastSlideIndex) {
-      handleLogin();
+      redirectToRegister();
     } else {
       const newIndex = activeIndex + 1;
       if (newIndex < SLIDE_DATA.length) {
@@ -123,12 +125,16 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
     }
   };
 
-  const handleSkipPress = () => handleLogin();
+  const handleSkipPress = () => redirectToRegister();
 
-  const handleLogin = () => {
-    Alert.alert('Welcome!', 'App is working perfectly!', [
-      { text: 'OK', style: 'default' },
-    ]);
+  const redirectToRegister = async () => {
+    await storeData('introShown', 'true');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'register' }],
+      }),
+    );
   };
 
   const onViewableItemsChanged = useRef(
@@ -201,6 +207,7 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
         title={activeIndex === lastSlideIndex ? 'Get Started' : 'Next'}
         onPress={handleNextPress}
         buttonType="primary"
+        style={styles.button}
       />
     </View>
   );
@@ -264,6 +271,9 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+  },
+  button: {
+    width: 200,
   },
 });
 
