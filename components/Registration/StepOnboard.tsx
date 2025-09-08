@@ -5,14 +5,12 @@ import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 import Button from '../Button';
 import LexendText from '../LexendText';
 import ManropeText from '../ManropeText';
-
-type AuthStackParamList = {
-  login: undefined;
-};
+import { storeData } from '../../utils/storage';
+import { RootStackParamList } from '../../navigation/types';
 
 const StepOnboard: FC = () => {
   const navigation =
-    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <Fragment>
       <View style={styles.container}>
@@ -28,7 +26,8 @@ const StepOnboard: FC = () => {
             All Done!
           </LexendText>
           <ManropeText style={styles.subtitle}>
-            {`Welcome to limitless \nopportunities!`}
+            {`Welcome to limitless 
+opportunities!`}
           </ManropeText>
         </ImageBackground>
       </View>
@@ -36,7 +35,10 @@ const StepOnboard: FC = () => {
         <Button
           title="Get Started"
           style={styles.continueButton}
-          onPress={() => navigation.navigate('login')}
+          onPress={async () => {
+            await storeData('onboarded', 'true');
+            navigation.navigate('Subscribe');
+          }}
         />
       </View>
     </Fragment>

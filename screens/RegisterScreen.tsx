@@ -9,11 +9,10 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { EmailInput } from '../components/FormInputs';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppleIcon from '../assets/images/icons/apple.svg';
-import GoogleIcon from '../assets/images/icons/google.svg';
+import { AppleIcon, GoogleIcon } from '../assets/icons';
 import Button from '../components/Button';
+import { EmailInput } from '../components/FormInputs';
 import LexendText from '../components/LexendText';
 import ManropeText from '../components/ManropeText';
 import StepOnboard from '../components/Registration/StepOnboard';
@@ -23,7 +22,7 @@ import StepVerification from '../components/Registration/StepVerification';
 import { COLORS } from '../constants/colors';
 
 type AuthStackParamList = {
-  login: undefined;
+  Login: undefined;
 };
 
 const RegisterScreen: FC = () => {
@@ -42,7 +41,7 @@ const RegisterScreen: FC = () => {
   const [otp, setOtp] = useState('');
 
   const handleLoginPress = () => {
-    navigation.navigate('login');
+    navigation.navigate('Login');
   };
 
   const handleBackPress = () => {
@@ -71,10 +70,7 @@ const RegisterScreen: FC = () => {
               Register your details with on your own email
             </ManropeText>
 
-            <EmailInput
-              value={email}
-              onChangeText={setEmail}
-            />
+            <EmailInput value={email} onChangeText={setEmail} />
 
             <Button
               title="Continue"

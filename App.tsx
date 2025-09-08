@@ -15,18 +15,22 @@ import AppLoader from './components/AppLoader';
 import { COLORS } from './constants/colors';
 import Navigation from './navigation';
 import { retrieveData } from './utils/storage';
+import { RootStackParamList } from './navigation/types';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [initialRoute, setInitialRoute] = useState<'intro' | 'login'>('intro');
+  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>('Auth');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkIntroStatus = async () => {
       try {
-        const introShown = await retrieveData('introShown');
-        if (introShown === 'true') {
-          setInitialRoute('login');
+        const onboarded = await retrieveData('onboarded');
+
+        if (onboarded === 'true') {
+          setInitialRoute('App');
+        } else {
+          setInitialRoute('Auth');
         }
       } catch (error) {
         console.error('Error reading from AsyncStorage:', error);

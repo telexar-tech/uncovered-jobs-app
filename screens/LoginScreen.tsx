@@ -12,8 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
-import AppleIcon from '../assets/images/icons/apple.svg';
-import GoogleIcon from '../assets/images/icons/google.svg';
+import { AppleIcon, GoogleIcon } from '../assets/icons';
 import Button from '../components/Button';
 import { EmailInput, PasswordInput } from '../components/FormInputs';
 import LexendText from '../components/LexendText';
@@ -21,7 +20,7 @@ import ManropeText from '../components/ManropeText';
 import { COLORS } from '../constants/colors';
 
 type AuthStackParamList = {
-  register: undefined;
+  Register: undefined;
 };
 
 const loginSchema = Yup.object().shape({
@@ -45,7 +44,7 @@ const LoginScreen: FC = () => {
   const passwordInputRef = React.useRef<any>(null);
 
   const handleRegisterPress = () => {
-    navigation.navigate('register');
+    navigation.navigate('Register');
   };
 
   const handleSubmit = async () => {

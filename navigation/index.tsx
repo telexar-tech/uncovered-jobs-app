@@ -5,13 +5,19 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useColorScheme } from 'react-native';
-import IntroScreen from '../screens/IntroScreen';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import CategoryScreen from '../screens/CategoryScreen';
+import SubscribeScreen from '../screens/SubscribeScreen';
+import BottomTabNavigator from './BottomStackNavigator';
+import AuthStackNavigator from './AuthStackNavigator';
+import { RootStackParamList } from './types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function Navigation({ initialRouteName }: { initialRouteName: 'intro' | 'login' }) {
+function Navigation({
+  initialRouteName,
+}: {
+  initialRouteName: keyof RootStackParamList;
+}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
@@ -20,9 +26,10 @@ function Navigation({ initialRouteName }: { initialRouteName: 'intro' | 'login' 
         initialRouteName={initialRouteName}
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="intro" component={IntroScreen} />
-        <Stack.Screen name="login" component={LoginScreen} />
-        <Stack.Screen name="register" component={RegisterScreen} />
+        <Stack.Screen name="Auth" component={AuthStackNavigator} />
+        <Stack.Screen name="Subscribe" component={SubscribeScreen} />
+        <Stack.Screen name="Category" component={CategoryScreen} />
+        <Stack.Screen name="App" component={BottomTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

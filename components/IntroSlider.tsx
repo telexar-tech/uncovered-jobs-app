@@ -132,7 +132,7 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'register' }],
+        routes: [{ name: 'Register' }],
       }),
     );
   };
@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     color: COLORS.violet300,
     textAlign: 'left',
+    alignSelf:'flex-start'
   },
   paginationContainer: {
     flexDirection: 'row',
