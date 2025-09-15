@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -19,13 +19,17 @@ import StepOnboard from '../components/Registration/StepOnboard';
 import StepPassword from '../components/Registration/StepPassword';
 import StepPersonalInfo from '../components/Registration/StepPersonalInfo';
 import StepVerification from '../components/Registration/StepVerification';
-import { COLORS } from '../constants/colors';
+import { ThemeType } from '../constants/theme';
+import { useTheme } from '../context/ThemeContext';
 
 type AuthStackParamList = {
   Login: undefined;
 };
 
 const RegisterScreen: FC = () => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
@@ -66,7 +70,7 @@ const RegisterScreen: FC = () => {
             <LexendText fontWeight="bold" style={styles.title}>
               {`Let's Register\nyou!`}
             </LexendText>
-            <ManropeText style={styles.subtitle}>
+            <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
               Register your details with on your own email
             </ManropeText>
 
@@ -122,7 +126,7 @@ const RegisterScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, styles.safeAreaBackground]}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoiding}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -135,7 +139,9 @@ const RegisterScreen: FC = () => {
 
           {step === 1 && (
             <View style={styles.footer}>
-              <ManropeText style={styles.dividerText}>
+              <ManropeText
+                style={[styles.dividerText, styles.dividerTextColor]}
+              >
                 Or continue with
               </ManropeText>
 
@@ -150,14 +156,15 @@ const RegisterScreen: FC = () => {
                 buttonType="outline"
                 style={styles.socialButton}
                 icon={AppleIcon}
+                iconColor={theme.colors.text.primary}
               />
 
               <View style={styles.loginContainer}>
-                <ManropeText style={styles.loginText}>
+                <ManropeText style={[styles.loginText, styles.loginTextColor]}>
                   Already have an account?
                 </ManropeText>
                 <ManropeText
-                  style={styles.loginLink}
+                  style={[styles.loginLink, styles.loginLinkColor]}
                   fontWeight="extraBold"
                   onPress={handleLoginPress}
                 >
@@ -172,71 +179,81 @@ const RegisterScreen: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  keyboardAvoiding: { flex: 1 },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  headerImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 16,
-  },
-  title: {
-    fontSize: 40,
-    marginTop: 20,
-    marginBottom: 15,
-    lineHeight: 48,
-  },
-  subtitle: {
-    color: COLORS.violet300,
-    fontSize: 16,
-    marginLeft: 4,
-  },
-  input: {
-    width: '100%',
-    marginTop: 20,
-  },
-  inputOutline: {
-    borderRadius: 12,
-    borderColor: COLORS.black,
-  },
-  continueButton: {
-    width: '100%',
-    marginVertical: 10,
-  },
-  footer: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  dividerText: {
-    marginBottom: 20,
-    color: '#B3B3B3',
-    fontSize: 16,
-  },
-  socialButton: {
-    marginBottom: 10,
-    width: '100%',
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  loginText: {
-    color: COLORS.violet300,
-  },
-  loginLink: {
-    color: COLORS.primary,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
+    safeAreaBackground: {
+      backgroundColor: theme.colors.background.primary,
+    },
+    keyboardAvoiding: { flex: 1 },
+    container: {
+      flexGrow: 1,
+      justifyContent: 'space-between',
+      padding: 20,
+    },
+    headerImage: {
+      width: '100%',
+      height: 200,
+      borderRadius: 16,
+    },
+    title: {
+      fontSize: 40,
+      marginTop: 20,
+      marginBottom: 15,
+      lineHeight: 48,
+    },
+    subtitle: {
+      fontSize: 16,
+      marginLeft: 4,
+    },
+    subtitleColor: {
+      color: theme.colors.text.muted,
+    },
+    input: {
+      width: '100%',
+      marginTop: 20,
+    },
+    inputOutline: {
+      borderRadius: 12,
+    },
+    continueButton: {
+      width: '100%',
+      marginVertical: 10,
+    },
+    footer: {
+      alignItems: 'center',
+      width: '100%',
+    },
+    dividerText: {
+      marginBottom: 20,
+      fontSize: 16,
+    },
+    dividerTextColor: {
+      color: theme.colors.text.violet200,
+    },
+    socialButton: {
+      marginBottom: 10,
+      width: '100%',
+    },
+    loginContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    loginText: {},
+    loginTextColor: {
+      color: theme.colors.text.violet200,
+    },
+    loginLink: {
+      textDecorationLine: 'underline',
+    },
+    loginLinkColor: {
+      color: theme.colors.brand.primary,
+    },
+  });
 
 export default RegisterScreen;

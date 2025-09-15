@@ -7,7 +7,7 @@ import {
   MyJobsIcon,
   ProfileIcon,
 } from '../assets/icons';
-import { COLORS } from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
 import ExploreScreen from '../screens/ExploreScreen';
 import MessageScreen from '../screens/MessageScreen';
 import MyJobsScreen from '../screens/MyJobsScreen';
@@ -36,6 +36,8 @@ const renderTabBarIcon = (
 };
 
 const BottomTabNavigator = () => {
+  const { theme } = useTheme();
+
   return (
     <BottomTab.Navigator
       initialRouteName="Explore"
@@ -43,10 +45,10 @@ const BottomTabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => renderTabBarIcon(route, color, size),
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: '#CFCFCF',
+        tabBarActiveTintColor: theme.colors.brand.primary,
+        tabBarInactiveTintColor: theme.colors.text.muted,
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: theme.colors.background.primary,
           borderTopWidth: 0,
           elevation: 0,
           paddingTop: 5,

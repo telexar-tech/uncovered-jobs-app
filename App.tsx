@@ -5,21 +5,19 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import {
-  StatusBar,
-  useColorScheme
-} from 'react-native';
+import { StatusBar } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppLoader from './components/AppLoader';
-import { COLORS } from './constants/colors';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Navigation from './navigation';
-import { retrieveData } from './utils/storage';
 import { RootStackParamList } from './navigation/types';
+import { retrieveData } from './utils/storage';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const [initialRoute, setInitialRoute] = useState<keyof RootStackParamList>('Auth');
+  const { theme, isDark } = useTheme();
+  const [initialRoute, setInitialRoute] =
+    useState<keyof RootStackParamList>('Auth');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,22 +41,24 @@ function App(): React.JSX.Element {
   }, []);
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? COLORS.black : COLORS.white,
+    backgroundColor: theme.colors.background.primary,
     flex: 1,
   };
 
   if (loading) return <AppLoader />;
 
   return (
-    <PaperProvider>
-      <SafeAreaProvider style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <Navigation initialRouteName={initialRoute} />
-      </SafeAreaProvider>
-    </PaperProvider>
+    <ThemeProvider>
+      <PaperProvider>
+        <SafeAreaProvider style={backgroundStyle}>
+          <StatusBar
+            barStyle={isDark ? 'light-content' : 'dark-content'}
+            backgroundColor={theme.colors.background.primary}
+          />
+          <Navigation initialRouteName={initialRoute} />
+        </SafeAreaProvider>
+      </PaperProvider>
+    </ThemeProvider>
   );
 }
 

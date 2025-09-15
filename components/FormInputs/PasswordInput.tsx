@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { HelperText, TextInput, TextInputProps } from 'react-native-paper';
-import { COLORS } from '../../constants/colors';
+import { ThemeType } from '../../constants/theme';
+import { useTheme } from '../../context/ThemeContext';
 
 interface PasswordInputProps extends Omit<TextInputProps, 'error'> {
   errorMessage?: string;
@@ -16,6 +17,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   numberOfLines = 1,
   ...rest
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const [isPasswordSecure, setIsPasswordSecure] = React.useState(true);
   return (
     <>
@@ -27,9 +31,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         autoCorrect={false}
         mode="outlined"
         style={styles.input}
-        outlineStyle={styles.inputOutline}
-        placeholderTextColor={COLORS.violet200}
-        activeOutlineColor={COLORS.primary}
+        outlineStyle={[styles.inputOutline, styles.inputOutlineBorderColor]}
+        placeholderTextColor={theme.colors.text.violet200}
+        activeOutlineColor={theme.colors.brand.primary}
         accessible={true}
         accessibilityLabel="Password Input"
         accessibilityHint="Enter your password"
@@ -56,15 +60,18 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    width: '100%',
-    marginTop: 20,
-  },
-  inputOutline: {
-    borderRadius: 12,
-    borderColor: COLORS.violet200,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    input: {
+      width: '100%',
+      marginTop: 20,
+    },
+    inputOutline: {
+      borderRadius: 12,
+    },
+    inputOutlineBorderColor: {
+      borderColor: theme.colors.text.violet200,
+    },
+  });
 
 export default PasswordInput;

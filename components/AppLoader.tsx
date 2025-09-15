@@ -1,10 +1,10 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { COLORS } from '../constants/colors';
+import { baseColors } from '../constants/colors';
 
 const AppLoader: React.FC = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator color={COLORS.primary} size={'large'} />
+      <ActivityIndicator color={baseColors.brand.primary} size={'large'} />
     </View>
   );
 };

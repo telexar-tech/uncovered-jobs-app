@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
 import { FONTS } from '../constants/fonts';
+import { useTheme } from '../context/ThemeContext';
 
 type FontWeight =
   | 'thin'
@@ -23,6 +24,7 @@ const LexendText: FC<LexendTextProps> = ({
   fontWeight = 'medium',
   ...props
 }) => {
+  const { theme } = useTheme();
   const getFontFamily = () => {
     switch (fontWeight) {
       case 'thin':
@@ -51,6 +53,7 @@ const LexendText: FC<LexendTextProps> = ({
   const styles = StyleSheet.create({
     default: {
       fontFamily: getFontFamily(),
+      color: theme.colors.text.primary,
     },
   });
 

@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ThemeType } from '../../constants/theme';
+import { useTheme } from '../../context/ThemeContext';
 import ManropeText from '../ManropeText';
-import { COLORS } from '../../constants/colors';
 
 interface OtpInputProps {
   onOtpChange: (otp: string) => void;
@@ -9,6 +10,9 @@ interface OtpInputProps {
 }
 
 const OtpInput: React.FC<OtpInputProps> = ({ onOtpChange, length = 4 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const inputRef = useRef<TextInput>(null);
   const [code, setCode] = useState('');
 
@@ -34,10 +38,15 @@ const OtpInput: React.FC<OtpInputProps> = ({ onOtpChange, length = 4 }) => {
               key={index}
               style={[
                 styles.pinCodeContainer,
-                isFocused && styles.activePinCodeContainer,
+                styles.pinCodeBorderColor,
+                isFocused && styles.pinCodeFocusedBorderColor,
               ]}
             >
-              <ManropeText style={styles.pinCodeText}>{digit}</ManropeText>
+              <ManropeText
+                style={[styles.pinCodeText, styles.pinCodeTextColor]}
+              >
+                {digit}
+              </ManropeText>
             </View>
           );
         })}
@@ -51,49 +60,54 @@ const OtpInput: React.FC<OtpInputProps> = ({ onOtpChange, length = 4 }) => {
         maxLength={length}
         caretHidden={Platform.OS === 'ios'}
         textContentType="oneTimeCode"
-        autoComplete={Platform.OS === "android" ? "sms-otp" : "one-time-code"}
+        autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
         testID="otp-input-hidden"
       />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-  },
-  hiddenInput: {
-    position: 'absolute',
-    width: 1,
-    height: 1,
-    opacity: 0,
-  },
-  pinCodeContainer: {
-    width: 54,
-    height: 54,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.violet100,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pinCodeText: {
-    fontSize: 24,
-    color: COLORS.black,
-    fontWeight: 'bold',
-  },
-  activePinCodeContainer: {
-    borderColor: COLORS.black,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    inputContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 10,
+    },
+    hiddenInput: {
+      position: 'absolute',
+      width: 1,
+      height: 1,
+      opacity: 0,
+    },
+    pinCodeContainer: {
+      width: 54,
+      height: 54,
+      borderRadius: 12,
+      borderWidth: 1,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    pinCodeBorderColor: {
+      borderColor: theme.colors.text.violet100,
+    },
+    pinCodeFocusedBorderColor: {
+      borderColor: theme.colors.text.primary,
+    },
+    pinCodeText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+    },
+    pinCodeTextColor: {
+      color: theme.colors.text.primary,
+    },
+  });
 
 export default OtpInput;

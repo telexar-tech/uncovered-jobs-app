@@ -1,6 +1,8 @@
-import { HelperText, TextInput, TextInputProps } from 'react-native-paper';
-import { COLORS } from '../../constants/colors';
+import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
+import { HelperText, TextInput, TextInputProps } from 'react-native-paper';
+import { ThemeType } from '../../constants/theme';
+import { useTheme } from '../../context/ThemeContext';
 
 interface EmailInputProps extends Omit<TextInputProps, 'error'> {
   errorMessage?: string;
@@ -13,6 +15,9 @@ const EmailInput: React.FC<EmailInputProps> = ({
   numberOfLines = 1,
   ...rest
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   return (
     <>
       <TextInput
@@ -26,9 +31,9 @@ const EmailInput: React.FC<EmailInputProps> = ({
         autoComplete="email"
         mode="outlined"
         style={styles.input}
-        outlineStyle={styles.inputOutline}
-        placeholderTextColor={COLORS.violet200}
-        activeOutlineColor={COLORS.primary}
+        outlineStyle={[styles.inputOutline, styles.inputOutlineBorderColor]}
+        placeholderTextColor={theme.colors.text.violet200}
+        activeOutlineColor={theme.colors.brand.primary}
         accessible={true}
         accessibilityLabel="Email Input"
         accessibilityHint="Enter your email address"
@@ -47,15 +52,18 @@ const EmailInput: React.FC<EmailInputProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    width: '100%',
-    marginTop: 20,
-  },
-  inputOutline: {
-    borderRadius: 12,
-    borderColor: COLORS.violet200,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    input: {
+      width: '100%',
+      marginTop: 20,
+    },
+    inputOutline: {
+      borderRadius: 12,
+    },
+    inputOutlineBorderColor: {
+      borderColor: theme.colors.text.violet200,
+    },
+  });
 
 export default EmailInput;

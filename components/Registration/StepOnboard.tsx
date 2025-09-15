@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, Fragment } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
+import { RootStackParamList } from '../../navigation/types';
+import { storeData } from '../../utils/storage';
 import Button from '../Button';
 import LexendText from '../LexendText';
 import ManropeText from '../ManropeText';
-import { storeData } from '../../utils/storage';
-import { RootStackParamList } from '../../navigation/types';
 
 const StepOnboard: FC = () => {
   const navigation =

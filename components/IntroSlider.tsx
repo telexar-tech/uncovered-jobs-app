@@ -1,5 +1,5 @@
 import { CommonActions, useNavigation } from '@react-navigation/native';
-import { FC, useRef, useState } from 'react';
+import { FC, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -10,7 +10,8 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../constants/colors';
+import { ThemeType } from '../constants/theme';
+import { useTheme } from '../context/ThemeContext';
 import { storeData } from '../utils/storage';
 import Button from './Button';
 import LexendText from './LexendText';
@@ -69,6 +70,9 @@ const Pagination: FC<PaginationProps> = ({
   activeIndex,
   onPaginationPress,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   return (
     <View style={styles.paginationContainer}>
       {SLIDE_DATA.map((_, index) => (
@@ -77,11 +81,9 @@ const Pagination: FC<PaginationProps> = ({
           key={index}
           style={[
             styles.pagination,
-            // eslint-disable-next-line react-native/no-inline-styles
-            {
-              backgroundColor:
-                activeIndex === index ? COLORS.primary : '#D9D9D9',
-            },
+            activeIndex === index
+              ? styles.paginationActive
+              : styles.paginationInactive,
           ]}
         />
       ))}
@@ -94,6 +96,9 @@ interface IntroSliderProps {
 }
 
 const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const flatListRef = useRef<FlatList>(null);
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
 
@@ -158,26 +163,38 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
         resizeMode="contain"
       />
 
-      <LexendText fontWeight="bold" style={styles.slideTitle}>
+      <LexendText
+        fontWeight="bold"
+        style={[styles.slideTitle, styles.slideTitleColor]}
+      >
         {item.title}
       </LexendText>
 
-      <ManropeText style={styles.slideDescription}>
+      <ManropeText
+        style={[styles.slideDescription, styles.slideDescriptionColor]}
+      >
         {item.description}
       </ManropeText>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.containerBackground]}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={handleBackPress}>
-          <Icon name="chevron-back-outline" size={24} color="#000" />
+          <Icon
+            name="chevron-back-outline"
+            size={24}
+            color={theme.colors.text.primary}
+          />
         </TouchableOpacity>
 
         {activeIndex < lastSlideIndex ? (
           <TouchableOpacity onPress={handleSkipPress}>
-            <ManropeText fontWeight="semiBold" style={styles.skipText}>
+            <ManropeText
+              fontWeight="semiBold"
+              style={[styles.skipText, styles.skipTextColor]}
+            >
               Skip
             </ManropeText>
           </TouchableOpacity>
@@ -213,69 +230,84 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingBottom: 20,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  skipText: {
-    color: '#000',
-    fontSize: 16,
-  },
-  slideContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    padding: 20,
-  },
-  slideImage: {
-    marginTop: 20,
-    marginBottom: 30,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  slideTitle: {
-    fontSize: 40,
-    lineHeight: 48,
-    color: COLORS.violet500,
-    textAlign: 'left',
-    marginHorizontal: 8,
-  },
-  slideDescription: {
-    fontSize: 18,
-    marginVertical: 20,
-    marginHorizontal: 10,
-    color: COLORS.violet300,
-    textAlign: 'left',
-    alignSelf:'flex-start'
-  },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20,
-    gap: 10,
-  },
-  pagination: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  button: {
-    width: 200,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingBottom: 20,
+    },
+    containerBackground: {
+      backgroundColor: theme.colors.background.primary,
+    },
+    headerContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+    },
+    skipText: {
+      fontSize: 16,
+    },
+    skipTextColor: {
+      color: theme.colors.text.primary,
+    },
+    slideContainer: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+      padding: 20,
+    },
+    slideImage: {
+      marginTop: 20,
+      marginBottom: 30,
+      borderRadius: 16,
+      overflow: 'hidden',
+    },
+    slideTitle: {
+      fontSize: 40,
+      lineHeight: 48,
+      textAlign: 'left',
+      marginHorizontal: 8,
+    },
+    slideTitleColor: {
+      color: theme.colors.text.primary,
+    },
+    slideDescription: {
+      fontSize: 18,
+      marginVertical: 20,
+      marginHorizontal: 10,
+      textAlign: 'left',
+      alignSelf: 'flex-start',
+    },
+    slideDescriptionColor: {
+      color: theme.colors.text.secondary,
+    },
+    paginationContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 20,
+      gap: 10,
+    },
+    pagination: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+    },
+    paginationActive: {
+      backgroundColor: theme.colors.brand.primary,
+    },
+    paginationInactive: {
+      backgroundColor: '#D9D9D9',
+    },
+    button: {
+      width: 200,
+    },
+  });
 
 export default IntroSlider;

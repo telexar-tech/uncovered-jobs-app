@@ -1,17 +1,22 @@
-import { FC, Fragment, useState } from 'react';
+import { FC, Fragment, useMemo, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import IntroSlider from '../components/IntroSlider';
 import LexendText from '../components/LexendText';
-import { COLORS } from '../constants/colors';
+import { useTheme } from '../context/ThemeContext';
+import { ThemeType } from '../constants/theme';
 
 const IntroScreen: FC = () => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+  
   const [showSlider, setShowSlider] = useState(false);
-
+  
   const handleGetStarted = () => {
     setShowSlider(true);
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,62 +43,42 @@ const IntroScreen: FC = () => {
     </SafeAreaView>
   );
 };
-
 const { width, height } = Dimensions.get('window');
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  cardContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardImage: {
-    height: height * 0.9,
-    width: width * 0.9,
-    borderRadius: 20,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    margin: 10,
-  },
-  buttonContainer: {
-    width: '100%',
-    paddingHorizontal: width * 0.05,
-    paddingBottom: height * 0.05,
-  },
-  title: {
-    fontSize: 36,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#fff',
-  },
-  button: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 50,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    shadowColor: COLORS.primary,
-    shadowOffset: {
-      width: 0,
-      height: 4,
+const createStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.background.primary,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});
+    cardContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    cardImage: {
+      height: height * 0.9,
+      width: width * 0.9,
+      borderRadius: 20,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 10,
+      margin: 10,
+    },
+    buttonContainer: {
+      width: '100%',
+      paddingHorizontal: width * 0.05,
+      paddingBottom: height * 0.05,
+    },
+    title: {
+      fontSize: 36,
+      textAlign: 'center',
+      marginBottom: 20,
+      color: theme.colors.neutral.white,
+    },
+  });
 
 export default IntroScreen;

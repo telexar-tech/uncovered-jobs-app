@@ -1,8 +1,9 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { PhoneInput, isValidNumber } from 'react-native-phone-entry';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../../constants/colors';
+import { ThemeType } from '../../constants/theme';
+import { useTheme } from '../../context/ThemeContext';
 import Button from '../Button';
 import AppTextInput from '../FormInputs/AppTextInput';
 import LexendText from '../LexendText';
@@ -33,6 +34,9 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
   address,
   setAddress,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const lastNameInputRef = useRef<any>(null);
   const addressInputRef = useRef<any>(null);
   const [isPhoneValid, setIsPhoneValid] = useState(true);
@@ -43,7 +47,11 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
       <View>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBackPress}>
-            <Icon name="chevron-back-outline" size={24} color="#000" />
+            <Icon
+              name="chevron-back-outline"
+              size={24}
+              color={theme.colors.text.primary}
+            />
           </TouchableOpacity>
         </View>
 
@@ -51,7 +59,7 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
           <LexendText fontWeight="bold" style={styles.title}>
             {`Register now!`}
           </LexendText>
-          <ManropeText style={styles.subtitle}>
+          <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
             Register your details with on your own email
           </ManropeText>
 
@@ -83,18 +91,26 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
               setIsPhoneValid(isValidNumber(text, countryCode));
             }}
             renderCustomDropdown={
-              <Icon name="chevron-down-outline" size={18} color="#000" />
+              <Icon
+                name="chevron-down-outline"
+                size={18}
+                color={theme.colors.text.primary}
+              />
             }
             isCallingCodeEditable={false}
             theme={{
-              containerStyle: {
-                marginTop: 24,
-                height: 50,
-                borderColor: isPhoneValid ? COLORS.violet200 : 'red',
-              },
+              containerStyle: [
+                styles.phoneInputContainer,
+                isPhoneValid
+                  ? styles.phoneInputValidBorder
+                  : styles.phoneInputInvalidBorder,
+              ],
               flagButtonStyle: {},
               dropDownImageStyle: {
                 alignSelf: 'center',
+              },
+              textInputStyle: {
+                color: theme.colors.text.primary,
               },
             }}
             onChangeCountry={country => {
@@ -124,31 +140,45 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 40,
-    marginTop: 20,
-    marginBottom: 15,
-    lineHeight: 48,
-  },
-  subtitle: {
-    color: COLORS.violet300,
-    fontSize: 16,
-    marginLeft: 4,
-  },
-  continueButton: {
-    width: '100%',
-    marginVertical: 10,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 40,
+      marginTop: 20,
+      marginBottom: 15,
+      lineHeight: 48,
+    },
+    subtitle: {
+      fontSize: 16,
+      marginLeft: 4,
+    },
+    subtitleColor: {
+      color: theme.colors.text.muted,
+    },
+    continueButton: {
+      width: '100%',
+      marginVertical: 10,
+    },
+    phoneInputContainer: {
+      marginTop: 24,
+      height: 50,
+      backgroundColor: theme.colors.background.alt,
+    },
+    phoneInputValidBorder: {
+      borderColor: theme.colors.border.secondary,
+    },
+    phoneInputInvalidBorder: {
+      borderColor: 'red',
+    },
+  });
 
 export default StepPersonalInfo;

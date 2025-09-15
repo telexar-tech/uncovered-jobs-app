@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -17,7 +17,8 @@ import Button from '../components/Button';
 import { EmailInput, PasswordInput } from '../components/FormInputs';
 import LexendText from '../components/LexendText';
 import ManropeText from '../components/ManropeText';
-import { COLORS } from '../constants/colors';
+import { ThemeType } from '../constants/theme';
+import { useTheme } from '../context/ThemeContext';
 
 type AuthStackParamList = {
   Register: undefined;
@@ -31,6 +32,9 @@ const loginSchema = Yup.object().shape({
 });
 
 const LoginScreen: FC = () => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
@@ -66,7 +70,7 @@ const LoginScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, styles.safeAreaBackground]}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoiding}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -85,7 +89,7 @@ const LoginScreen: FC = () => {
             <LexendText fontWeight="bold" style={styles.title}>
               {`Let's Login`}
             </LexendText>
-            <ManropeText style={styles.subtitle}>
+            <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
               Enter your login credentials
             </ManropeText>
 
@@ -118,7 +122,9 @@ const LoginScreen: FC = () => {
               />
 
               <TouchableOpacity onPress={() => {}}>
-                <ManropeText style={styles.forgotPassword}>
+                <ManropeText
+                  style={[styles.forgotPassword, styles.forgotPasswordColor]}
+                >
                   Forgot Password?
                 </ManropeText>
               </TouchableOpacity>
@@ -132,7 +138,7 @@ const LoginScreen: FC = () => {
           </View>
 
           <View style={styles.footer}>
-            <ManropeText style={styles.dividerText}>
+            <ManropeText style={[styles.dividerText, styles.dividerTextColor]}>
               Or continue with
             </ManropeText>
 
@@ -147,14 +153,15 @@ const LoginScreen: FC = () => {
               buttonType="outline"
               style={styles.socialButton}
               icon={AppleIcon}
+              iconColor={theme.colors.text.primary}
             />
 
             <View style={styles.loginContainer}>
-              <ManropeText style={styles.loginText}>
+              <ManropeText style={[styles.loginText, styles.loginTextColor]}>
                 I don't have an account?
               </ManropeText>
               <ManropeText
-                style={styles.loginLink}
+                style={[styles.loginLink, styles.loginLinkColor]}
                 fontWeight="extraBold"
                 onPress={handleRegisterPress}
               >
@@ -168,76 +175,86 @@ const LoginScreen: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  keyboardAvoiding: {
-    flex: 1,
-  },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  headerImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 16,
-  },
-  title: {
-    fontSize: 40,
-    marginTop: 20,
-    marginBottom: 15,
-  },
-  subtitle: {
-    color: COLORS.violet300,
-    fontSize: 16,
-  },
-  input: {
-    width: '100%',
-    marginTop: 20,
-  },
-  inputOutline: {
-    borderRadius: 12,
-    borderColor: COLORS.black,
-  },
-  continueButton: {
-    width: '100%',
-    marginVertical: 10,
-  },
-  footer: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  dividerText: {
-    marginBottom: 20,
-    color: COLORS.grey,
-    fontSize: 16,
-  },
-  socialButton: {
-    marginBottom: 10,
-    width: '100%',
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  loginText: {
-    color: COLORS.violet300,
-  },
-  loginLink: {
-    color: COLORS.primary,
-  },
-  forgotPassword: {
-    color: '#B3B3B3',
-    textAlign: 'right',
-    marginTop: 5,
-  },
-});
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
+    safeAreaBackground: {
+      backgroundColor: theme.colors.background.primary,
+    },
+    keyboardAvoiding: {
+      flex: 1,
+    },
+    container: {
+      flexGrow: 1,
+      justifyContent: 'space-between',
+      padding: 20,
+    },
+    headerImage: {
+      width: '100%',
+      height: 200,
+      borderRadius: 16,
+    },
+    title: {
+      fontSize: 40,
+      marginTop: 20,
+      marginBottom: 15,
+    },
+    subtitle: {
+      fontSize: 16,
+    },
+    subtitleColor: {
+      color: theme.colors.text.muted,
+    },
+    input: {
+      width: '100%',
+      marginTop: 20,
+    },
+    inputOutline: {
+      borderRadius: 12,
+    },
+    continueButton: {
+      width: '100%',
+      marginVertical: 10,
+    },
+    footer: {
+      alignItems: 'center',
+      width: '100%',
+    },
+    dividerText: {
+      marginBottom: 20,
+      fontSize: 16,
+    },
+    dividerTextColor: {
+      color: theme.colors.neutral.grey,
+    },
+    socialButton: {
+      marginBottom: 10,
+      width: '100%',
+    },
+    loginContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    loginText: {},
+    loginTextColor: {
+      color: theme.colors.text.muted,
+    },
+    loginLink: {},
+    loginLinkColor: {
+      color: theme.colors.brand.primary,
+    },
+    forgotPassword: {
+      textAlign: 'right',
+      marginTop: 5,
+    },
+    forgotPasswordColor: {
+      color: theme.colors.neutral.grey,
+    },
+  });
 
 export default LoginScreen;

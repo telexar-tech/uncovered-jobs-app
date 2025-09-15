@@ -1,13 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import LexendText from '../components/LexendText';
 import ManropeText from '../components/ManropeText';
-import { COLORS } from '../constants/colors';
+import { ThemeType } from '../constants/theme';
+import { useTheme } from '../context/ThemeContext';
 import { RootStackParamList } from '../navigation/types';
 
 const CATEGORY_LIST = [
@@ -29,6 +30,9 @@ const CATEGORY_LIST = [
 ];
 
 const CategoryScreen = () => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [selectedCategories, setSelectedCategories] = React.useState<number[]>(
@@ -54,7 +58,7 @@ const CategoryScreen = () => {
   }, [search]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, styles.safeAreaBackground]}>
       <View style={styles.container}>
         <View>
           <LexendText fontWeight="bold" style={styles.title}>
@@ -62,7 +66,7 @@ const CategoryScreen = () => {
           </LexendText>
 
           <View style={styles.descriptionContainer}>
-            <ManropeText style={styles.subtitle}>
+            <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
               Select your preferred job categories that you want to get in your
               feed
             </ManropeText>
@@ -76,10 +80,10 @@ const CategoryScreen = () => {
           inputMode="search"
           textContentType="jobTitle"
           returnKeyType="search"
-          iconColor={COLORS.violet200}
-          placeholderTextColor={COLORS.violet200}
-          cursorColor={COLORS.primary}
-          style={styles.searchBar}
+          iconColor={theme.colors.text.violet200}
+          placeholderTextColor={theme.colors.text.violet200}
+          cursorColor={theme.colors.brand.primary}
+          style={[styles.searchBar, styles.searchBarBorderColor]}
           inputStyle={styles.searchBarInput}
         />
         <ScrollView
@@ -93,6 +97,7 @@ const CategoryScreen = () => {
                 key={category.id}
                 style={[
                   styles.categoryItem,
+                  styles.categoryItemBorderColor,
                   isSelected && styles.categoryItemSelected,
                 ]}
                 onPress={() => handleCategorySelect(category.id)}
@@ -100,9 +105,9 @@ const CategoryScreen = () => {
                 <ManropeText
                   style={[
                     styles.featureText,
-                    isSelected && styles.featureTextSelected,
+                    isSelected && styles.categoryItemTextColorSelected,
                   ]}
-                  fontWeight='semiBold'
+                  fontWeight="semiBold"
                 >
                   {category.title}
                 </ManropeText>
@@ -128,82 +133,92 @@ const CategoryScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 40,
-    marginBottom: 15,
-    marginLeft: -4,
-  },
-  subtitle: {
-    color: COLORS.violet300,
-    fontSize: 15,
-  },
-  descriptionContainer: {
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  searchBar: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderRadius: 99,
-    borderColor: COLORS.violet100,
-    height: 50,
-    marginTop:15,
-    marginBottom:10
-  },
-  searchBarInput: {
-    minHeight: 40,
-    fontSize: 16,
-  },
+const getStyles = (theme: ThemeType) =>
+  StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      padding: 20,
+    },
+    safeAreaBackground: {
+      backgroundColor: theme.colors.background.primary,
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    title: {
+      fontSize: 40,
+      marginBottom: 15,
+      marginLeft: -4,
+    },
+    subtitle: {
+      fontSize: 15,
+    },
+    subtitleColor: {
+      color: theme.colors.text.muted,
+    },
+    descriptionContainer: {
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    searchBar: {
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderRadius: 99,
+      height: 50,
+      marginTop: 15,
+      marginBottom: 10,
+    },
+    searchBarBorderColor: {
+      borderColor: theme.colors.border.primary,
+    },
+    searchBarInput: {
+      minHeight: 40,
+      fontSize: 16,
+    },
 
-  categoryScrollView: {
-    flexGrow: 1,
-    marginVertical: 20,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  categoryItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderColor: COLORS.violet200,
-    marginBottom:5
-  },
-  categoryItemSelected: {
-    backgroundColor: '#000',
-    borderColor: '#000',
-  },
-  featureText: {
-    fontSize: 16,
-  },
-  featureTextSelected: {
-    color: '#fff',
-  },
-  footer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 50,
-  },
+    categoryScrollView: {
+      flexGrow: 1,
+      marginVertical: 20,
+    },
+    categoryContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 12,
+    },
+    categoryItem: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 50,
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderWidth: 1,
+      marginBottom: 5,
+    },
+    categoryItemBorderColor: {
+      borderColor: theme.colors.border.secondary,
+    },
+    categoryItemSelected: {
+      backgroundColor: theme.colors.text.primary,
+      borderColor: theme.colors.border.secondary,
+    },
+    featureText: {
+      fontSize: 16,
+      color: theme.colors.text.primary,
+    },
+    categoryItemTextColorSelected: {
+      color: theme.colors.background.primary,
+    },
+    footer: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 50,
+    },
 
-  continueButton: {
-    flex: 1,
-  },
-});
+    continueButton: {
+      flex: 1,
+    },
+  });
 
 export default CategoryScreen;
