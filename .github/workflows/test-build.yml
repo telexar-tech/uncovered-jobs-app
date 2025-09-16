@@ -1,0 +1,105 @@
+name: Build Android and iOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    env:
+      SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+      SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+      SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Decode Android Keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: android/app/test-release-key.keystore
+          encodedString: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+
+      - name: Make Gradle Executable
+        run: chmod +x android/gradlew
+
+      - name: Build Android Artifacts
+        run: cd android && ./gradlew assembleRelease bundleRelease
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
+      
+      - name: Install JS Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install iOS Dependencies
+        run: |
+          cd ios && pod install
+
+      - name: Build IPA
+        run: |
+          xcodebuild -workspace ios/UncoveredJobsApp.xcworkspace \
+                     -scheme UncoveredJobsApp \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     -archivePath $PWD/build/UncoveredJobsApp.xcarchive archive
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/UncoveredJobsApp.xcarchive \
+                     -exportOptionsPlist ios/ExportOptions.plist \
+                     -exportPath $PWD/build/IPA
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UncoveredJobsApp.ipa
+          path: build/IPA/UncoveredJobsApp.ipa
