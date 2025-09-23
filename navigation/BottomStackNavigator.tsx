@@ -1,26 +1,29 @@
-import { RouteProp } from '@react-navigation/native';
+import { ExploreIcon, MessageIcon, MyJobsIcon, UserIcon } from '@/assets/icons';
+import { useTheme } from '@/context/ThemeContext';
+import ExploreScreen from '@/screens/ExploreScreen';
+import MessageScreen from '@/screens/MessageScreen';
+import MyJobsScreen from '@/screens/MyJobsScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
+import SettingsScreen from '@/screens/SettingsScreen';
+import SupportScreen from '@/screens/SupportScreen';
+import SupportDetailScreen from '@/screens/SupportDetailScreen';
+import UserProfileScreen from '@/screens/user/UserDetailsScreen';
+import UserEarningsScreen from '@/screens/user/UserEarningsScreen';
+import UserReportsScreen from '@/screens/user/UserReportsScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { RouteProp } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  ExploreIcon,
-  MessageIcon,
-  MyJobsIcon,
-  ProfileIcon,
-} from '../assets/icons';
-import { useTheme } from '../context/ThemeContext';
-import ExploreScreen from '../screens/ExploreScreen';
-import MessageScreen from '../screens/MessageScreen';
-import MyJobsScreen from '../screens/MyJobsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import { BottomTabParamList } from './types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+const Stack = createNativeStackNavigator();
 
 const routeIcons: Record<keyof BottomTabParamList, React.FC<any>> = {
   Explore: ExploreIcon,
   'My Jobs': MyJobsIcon,
   Message: MessageIcon,
-  Profile: ProfileIcon,
+  Profile: UserIcon,
 };
 
 const renderTabBarIcon = (
@@ -63,8 +66,25 @@ const BottomTabNavigator = () => {
       <BottomTab.Screen name="Explore" component={ExploreScreen} />
       <BottomTab.Screen name="My Jobs" component={MyJobsScreen} />
       <BottomTab.Screen name="Message" component={MessageScreen} />
-      <BottomTab.Screen name="Profile" component={ProfileScreen} />
+      <BottomTab.Screen name="Profile" component={ProfileStack} />
     </BottomTab.Navigator>
+  );
+};
+
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="ProfileTab"
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="ProfileTab" component={ProfileScreen} />
+      <Stack.Screen name="UserDetails" component={UserProfileScreen} />
+      <Stack.Screen name="UserEarnings" component={UserEarningsScreen} />
+      <Stack.Screen name="UserReports" component={UserReportsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="Support" component={SupportScreen} />
+      <Stack.Screen name="SupportDetail" component={SupportDetailScreen} />
+    </Stack.Navigator>
   );
 };
 

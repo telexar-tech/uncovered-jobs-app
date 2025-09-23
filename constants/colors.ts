@@ -29,6 +29,7 @@ export const lightThemeColors = {
   background: {
     primary: baseColors.neutral.white,
     alt: '#F5F7FA',
+    lightGreenAlt: '#EFF9F2'
   },
   text: {
     primary: baseColors.violet[500],
@@ -39,6 +40,7 @@ export const lightThemeColors = {
   border: {
     primary: baseColors.violet[200],
     secondary: baseColors.violet[100],
+    muted: '#E7E6E8'
   }
 };
 
@@ -47,6 +49,7 @@ export const darkThemeColors = {
   background: {
     primary: '#121212',
     alt: '#1E1E1E',
+    lightGreenAlt: 'rgba(239, 249, 242, 0.2)'
   },
   text: {
     primary: baseColors.neutral.white,
@@ -57,5 +60,6 @@ export const darkThemeColors = {
   border: {
     primary: baseColors.violet[200],
     secondary: baseColors.violet[100],
+    muted: '#E7E6E8'
   }
 };
