@@ -65,6 +65,7 @@ const getStyles = (theme: ThemeType) =>
     input: {
       width: '100%',
       marginTop: 20,
+      backgroundColor: theme.colors.background.primary,
     },
     inputOutline: {
       borderRadius: 12,

@@ -16,6 +16,7 @@ import { storeData } from '../utils/storage';
 import Button from './Button';
 import LexendText from './LexendText';
 import ManropeText from './ManropeText';
+import { scale } from '../utils/scale';
 
 interface Slide {
   id: number;
@@ -162,19 +163,20 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
         style={styles.slideImage}
         resizeMode="contain"
       />
+      <View>
+        <LexendText
+          fontWeight="bold"
+          style={[styles.slideTitle, styles.slideTitleColor]}
+        >
+          {item.title}
+        </LexendText>
 
-      <LexendText
-        fontWeight="bold"
-        style={[styles.slideTitle, styles.slideTitleColor]}
-      >
-        {item.title}
-      </LexendText>
-
-      <ManropeText
-        style={[styles.slideDescription, styles.slideDescriptionColor]}
-      >
-        {item.description}
-      </ManropeText>
+        <ManropeText
+          style={[styles.slideDescription, styles.slideDescriptionColor]}
+        >
+          {item.description}
+        </ManropeText>
+      </View>
     </View>
   );
 
@@ -203,17 +205,21 @@ const IntroSlider: FC<IntroSliderProps> = ({ onReset }) => {
         )}
       </View>
 
-      <FlatList
-        ref={flatListRef}
-        data={SLIDE_DATA}
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderItem}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-      />
+      <View 
+      style={styles.slideWrapper}
+      >
+        <FlatList
+          ref={flatListRef}
+          data={SLIDE_DATA}
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+        />
+      </View>
 
       <Pagination
         onPaginationPress={handlePaginationPress}
@@ -255,23 +261,23 @@ const getStyles = (theme: ThemeType) =>
     skipTextColor: {
       color: theme.colors.text.primary,
     },
+    slideWrapper: {flex:1},
     slideContainer: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
+      justifyContent: 'space-between',
+      alignItems: 'stretch',
       width: '100%',
-      height: '100%',
       padding: 20,
+      flex: 1,
     },
     slideImage: {
-      marginTop: 20,
-      marginBottom: 30,
+      height: '65%',
+      width: '100%',
       borderRadius: 16,
       overflow: 'hidden',
     },
     slideTitle: {
-      fontSize: 40,
-      lineHeight: 48,
+      fontSize: scale(33),
+      lineHeight: scale(38),
       textAlign: 'left',
       marginHorizontal: 8,
     },
@@ -279,8 +285,8 @@ const getStyles = (theme: ThemeType) =>
       color: theme.colors.text.primary,
     },
     slideDescription: {
-      fontSize: 18,
-      marginVertical: 20,
+      fontSize: scale(15),
+      marginTop: 20,
       marginHorizontal: 10,
       textAlign: 'left',
       alignSelf: 'flex-start',

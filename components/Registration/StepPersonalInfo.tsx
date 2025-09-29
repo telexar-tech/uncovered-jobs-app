@@ -1,9 +1,12 @@
-import React, { FC, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { PhoneInput, isValidNumber } from 'react-native-phone-entry';
+import { FormikErrors, FormikTouched, FormikValues } from 'formik';
+import React, { FC, useMemo, useRef } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { HelperText } from 'react-native-paper';
+import { PhoneInput } from 'react-native-phone-entry';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ThemeType } from '../../constants/theme';
 import { useTheme } from '../../context/ThemeContext';
+import { scale } from '../../utils/scale';
 import Button from '../Button';
 import AppTextInput from '../FormInputs/AppTextInput';
 import LexendText from '../LexendText';
@@ -11,42 +14,36 @@ import ManropeText from '../ManropeText';
 
 type StepPersonalInfoProps = {
   handleBackPress: () => void;
-  handleNext: () => void;
-  firstName: string;
-  setFirstName: (name: string) => void;
-  lastName: string;
-  setLastName: (name: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (phone: string) => void;
-  address: string;
-  setAddress: (address: string) => void;
+  onSubmit: () => void;
+  values: FormikValues;
+  touched: FormikTouched<any>;
+  errors: FormikErrors<any>;
+  setFieldValue: (name: string, value: any) => void;
+  validateField: (name: string) => void;
+  isValid: boolean;
 };
 
 const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
   handleBackPress,
-  handleNext,
-  firstName,
-  setFirstName,
-  lastName,
-  setLastName,
-  phoneNumber,
-  setPhoneNumber,
-  address,
-  setAddress,
+  onSubmit,
+  values,
+  errors,
+  touched,
+  setFieldValue,
+  validateField,
+  isValid,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const lastNameInputRef = useRef<any>(null);
-  const addressInputRef = useRef<any>(null);
-  const [isPhoneValid, setIsPhoneValid] = useState(true);
-  const [countryCode, setCountryCode] = useState('US');
+  const lastNameInputRef = useRef<TextInput>(null);
+  const addressInputRef = useRef<TextInput>(null);
 
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackPress}>
+          <TouchableOpacity onPress={handleBackPress} testID="back-button">
             <Icon
               name="chevron-back-outline"
               size={24}
@@ -59,17 +56,20 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
           <LexendText fontWeight="bold" style={styles.title}>
             {`Register now!`}
           </LexendText>
-          <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
-            Register your details with on your own email
+          <ManropeText style={styles.subtitle}>
+            You’re in registration process
           </ManropeText>
 
           <AppTextInput
             testID="first-name-input"
             label="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
+            value={values.firstName}
+            onChangeText={text => setFieldValue('firstName', text)}
+            autoCapitalize="words"
+            onBlur={() => validateField('firstName')}
+            errorMessage={touched.firstName ? (errors.firstName as string) : ''}
             onSubmitEditing={() => {
-              lastNameInputRef.current?.focus();
+              values.lastName === '' && lastNameInputRef.current?.focus();
             }}
           />
 
@@ -77,23 +77,28 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
             ref={lastNameInputRef}
             testID="last-name-input"
             label="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
+            value={values.lastName}
+            onChangeText={text => setFieldValue('lastName', text)}
+            autoCapitalize="words"
+            onBlur={() => validateField('lastName')}
             onSubmitEditing={() => {
-              addressInputRef.current?.focus();
+              values.address === '' && addressInputRef.current?.focus();
             }}
+            errorMessage={touched.lastName ? (errors.lastName as string) : ''}
           />
 
           <PhoneInput
-            value={phoneNumber}
-            onChangeText={text => {
-              setPhoneNumber(text);
-              setIsPhoneValid(isValidNumber(text, countryCode));
+            value={values.phoneNumber}
+            onChangeText={text => setFieldValue('phoneNumber', text)}
+            defaultValues={{
+              callingCode: '+1',
+              countryCode: 'US',
+              phoneNumber: values.phoneNumber,
             }}
             renderCustomDropdown={
               <Icon
                 name="chevron-down-outline"
-                size={18}
+                size={20}
                 color={theme.colors.text.primary}
               />
             }
@@ -101,9 +106,7 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
             theme={{
               containerStyle: [
                 styles.phoneInputContainer,
-                isPhoneValid
-                  ? styles.phoneInputValidBorder
-                  : styles.phoneInputInvalidBorder,
+                styles.phoneInputValidBorder,
               ],
               flagButtonStyle: {},
               dropDownImageStyle: {
@@ -113,28 +116,29 @@ const StepPersonalInfo: FC<StepPersonalInfoProps> = ({
                 color: theme.colors.text.primary,
               },
             }}
-            onChangeCountry={country => {
-              setCountryCode(country.cca2);
-              setIsPhoneValid(isValidNumber(phoneNumber, country.cca2));
-            }}
           />
+          {errors.phoneNumber && (
+            <HelperText type="error">{errors.phoneNumber as string}</HelperText>
+          )}
 
           <AppTextInput
             ref={addressInputRef}
             testID="address-input"
             label="Address"
-            value={address}
-            onChangeText={setAddress}
+            value={values.address}
+            onChangeText={text => setFieldValue('address', text)}
+            onBlur={() => validateField('address')}
+            errorMessage={touched.address ? (errors.address as string) : ''}
           />
         </View>
       </View>
 
       <Button
+        testID="next-button"
         title="Next"
         style={styles.continueButton}
-        onPress={() => {
-          handleNext();
-        }}
+        onPress={onSubmit}
+        disabled={!isValid}
       />
     </View>
   );
@@ -152,16 +156,15 @@ const getStyles = (theme: ThemeType) =>
       alignItems: 'center',
     },
     title: {
-      fontSize: 40,
+      fontSize: scale(38),
       marginTop: 20,
       marginBottom: 15,
-      lineHeight: 48,
+      lineHeight: scale(46),
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: scale(15),
+      lineHeight: scale(21),
       marginLeft: 4,
-    },
-    subtitleColor: {
       color: theme.colors.text.muted,
     },
     continueButton: {
@@ -171,10 +174,10 @@ const getStyles = (theme: ThemeType) =>
     phoneInputContainer: {
       marginTop: 24,
       height: 50,
-      backgroundColor: theme.colors.background.alt,
+      backgroundColor: theme.colors.background.primary,
     },
     phoneInputValidBorder: {
-      borderColor: theme.colors.border.secondary,
+      borderColor: theme.colors.border.primary,
     },
     phoneInputInvalidBorder: {
       borderColor: 'red',

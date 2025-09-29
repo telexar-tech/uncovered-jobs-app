@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC, Fragment } from 'react';
+import React, { FC } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
-import { RootStackParamList } from '../../navigation/types';
+import { AuthStackParamList } from '../../navigation/types';
+import { scale } from '../../utils/scale';
 import { storeData } from '../../utils/storage';
 import Button from '../Button';
 import LexendText from '../LexendText';
@@ -10,27 +11,23 @@ import ManropeText from '../ManropeText';
 
 const StepOnboard: FC = () => {
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   return (
-    <Fragment>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.cardImage}
-          source={require('../../assets/images/onboarding-bg.png')}
-          resizeMode="contain"
-        >
-          <LexendText
-            style={[styles.title, styles.titleText]}
-            fontWeight="bold"
-          >
-            All Done!
-          </LexendText>
-          <ManropeText style={styles.subtitle}>
-            {`Welcome to limitless 
+    <View style={styles.container}>
+      <ImageBackground
+        style={styles.cardImage}
+        source={require('../../assets/images/onboarding-bg.png')}
+        resizeMode="cover"
+      >
+        <LexendText style={[styles.title, styles.titleText]} fontWeight="bold">
+          All Done!
+        </LexendText>
+        <ManropeText style={styles.subtitle}>
+          {`Welcome to limitless 
 opportunities!`}
-          </ManropeText>
-        </ImageBackground>
-      </View>
+        </ManropeText>
+      </ImageBackground>
+
       <View style={styles.buttonContainer}>
         <Button
           title="Get Started"
@@ -41,33 +38,32 @@ opportunities!`}
           }}
         />
       </View>
-    </Fragment>
+    </View>
   );
 };
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
   },
   cardImage: {
-    height: height * 0.75,
+    flex: 1,
     width: width * 0.9,
     borderRadius: 20,
     overflow: 'hidden',
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
     padding: 10,
-    margin: 10,
   },
   title: {
-    fontSize: 40,
+    fontSize: scale(36),
     marginTop: 20,
     marginBottom: 15,
-    lineHeight: 48,
+      lineHeight: scale(40),
   },
   titleText: {
     marginHorizontal: 10,
@@ -76,17 +72,15 @@ const styles = StyleSheet.create({
   subtitle: {
     color: '#fff',
     bottom: 10,
-    fontSize: 17,
+    fontSize: scale(15),
     margin: 10,
   },
   buttonContainer: {
     width: '100%',
-    paddingHorizontal: width * 0.05,
-    paddingBottom: height * 0.05,
+    paddingTop: 20,
   },
   continueButton: {
     width: '100%',
-    marginVertical: 10,
   },
 });
 

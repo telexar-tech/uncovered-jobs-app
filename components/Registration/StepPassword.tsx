@@ -1,8 +1,10 @@
+import { FormikErrors, FormikTouched, FormikValues } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ThemeType } from '../../constants/theme';
 import { useTheme } from '../../context/ThemeContext';
+import { scale } from '../../utils/scale';
 import Button from '../Button';
 import { PasswordInput } from '../FormInputs';
 import LexendText from '../LexendText';
@@ -10,29 +12,37 @@ import ManropeText from '../ManropeText';
 
 type StepPasswordProps = {
   handleBackPress: () => void;
-  handleNext: () => void;
-  password?: string;
-  setPassword?: (password: string) => void;
-  confirmPassword?: string;
-  setConfirmPassword?: (password: string) => void;
+  onSubmit: () => void;
+  values: FormikValues;
+  touched: FormikTouched<any>;
+  errors: FormikErrors<any>;
+  handleBlur: any;
+  handleChange: any;
+  isValid: boolean;
+  loading?: boolean;
 };
 
 const StepPassword: FC<StepPasswordProps> = ({
   handleBackPress,
-  handleNext,
-  password,
-  setPassword,
-  confirmPassword,
-  setConfirmPassword,
+  onSubmit,
+  values,
+  touched,
+  errors,
+  handleBlur,
+  handleChange,
+  isValid,
+  loading,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+
+  const confirmPasswordInputRef = React.useRef<TextInput>(null);
 
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackPress}>
+          <TouchableOpacity onPress={handleBackPress} testID="back-button">
             <Icon
               name="chevron-back-outline"
               size={24}
@@ -51,20 +61,39 @@ const StepPassword: FC<StepPasswordProps> = ({
 
           <PasswordInput
             label="Password"
-            value={password}
-            onChangeText={setPassword}
+            value={values.password}
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            errorMessage={
+              touched.password && errors.password
+                ? (errors.password as string)
+                : undefined
+            }
+            onSubmitEditing={confirmPasswordInputRef.current?.focus}
           />
           <PasswordInput
+            ref={confirmPasswordInputRef}
+            testID="confirm-password-input"
             label="Confirm Password"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            value={values.confirmPassword}
+            onChangeText={handleChange('confirmPassword')}
+            onBlur={handleBlur('confirmPassword')}
+            errorMessage={
+              touched.confirmPassword && errors.confirmPassword
+                ? (errors.confirmPassword as string)
+                : undefined
+            }
+            onSubmitEditing={onSubmit}
           />
         </View>
       </View>
       <Button
+        testID="set-password-button"
         title="Set Password"
         style={styles.continueButton}
-        onPress={handleNext}
+        onPress={onSubmit}
+        disabled={!isValid}
+        loading={loading}
       />
     </View>
   );
@@ -82,13 +111,13 @@ const getStyles = (theme: ThemeType) =>
       alignItems: 'center',
     },
     title: {
-      fontSize: 40,
+      fontSize: scale(38),
       marginTop: 20,
       marginBottom: 15,
-      lineHeight: 48,
+      lineHeight: scale(40),
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: scale(15),
       marginLeft: 4,
     },
     subtitleColor: {

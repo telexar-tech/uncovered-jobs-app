@@ -29,7 +29,7 @@ const CATEGORY_LIST = [
   { id: 15, title: 'Science and Research' },
 ];
 
-const CategoryScreen = () => {
+const CategoryScreen: React.FC = () => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 

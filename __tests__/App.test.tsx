@@ -1,18 +1,19 @@
-/**
- * @format
- */
-
 import React from 'react';
-import { PaperProvider } from 'react-native-paper';
-import ReactTestRenderer from 'react-test-renderer';
+import {render, act} from '@testing-library/react-native';
 import App from '../App';
 
-test('renders correctly', async () => {
-  await ReactTestRenderer.act(() => {
-    ReactTestRenderer.create(
-      <PaperProvider>
-        <App />
-      </PaperProvider>
-    );
+jest.mock('../utils/storage', () => ({
+  storageUtil: {
+    retrieveObject: jest.fn().mockResolvedValue(null),
+    storeObject: jest.fn(),
+    removeData: jest.fn(),
+  },
+}));
+
+describe('App', () => {
+  it('renders correctly', async () => {
+    await act(async () => {
+      render(<App />);
+    });
   });
 });

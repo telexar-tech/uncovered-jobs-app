@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useMemo } from 'react';
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -18,11 +19,11 @@ import { EmailInput, PasswordInput } from '../components/FormInputs';
 import LexendText from '../components/LexendText';
 import ManropeText from '../components/ManropeText';
 import { ThemeType } from '../constants/theme';
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-
-type AuthStackParamList = {
-  Register: undefined;
-};
+import { AuthStackParamList } from '../navigation/types';
+import { login as loginService } from '../services/auth';
+import { scale } from '../utils/scale';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -34,6 +35,7 @@ const loginSchema = Yup.object().shape({
 const LoginScreen: FC = () => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+  const { login } = useAuth();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -43,7 +45,9 @@ const LoginScreen: FC = () => {
   const [errors, setErrors] = React.useState<{
     email?: string;
     password?: string;
+    api?: string;
   }>({});
+  const [loading, setLoading] = React.useState(false);
 
   const passwordInputRef = React.useRef<any>(null);
 
@@ -52,10 +56,12 @@ const LoginScreen: FC = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
+    setErrors({});
     try {
       await loginSchema.validate({ email, password }, { abortEarly: false });
-      console.log({ email, password });
-      setErrors({});
+      const user = await loginService(email, password);
+      login(user);
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const newErrors: { [key: string]: string } = {};
@@ -65,12 +71,16 @@ const LoginScreen: FC = () => {
           }
         });
         setErrors(newErrors);
+      } else {
+        Alert.alert('Login Failed', (error as Error).message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, styles.safeAreaBackground]}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoiding}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -89,7 +99,7 @@ const LoginScreen: FC = () => {
             <LexendText fontWeight="bold" style={styles.title}>
               {`Let's Login`}
             </LexendText>
-            <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
+            <ManropeText style={styles.subtitle}>
               Enter your login credentials
             </ManropeText>
 
@@ -106,6 +116,7 @@ const LoginScreen: FC = () => {
                 onSubmitEditing={() => {
                   passwordInputRef.current?.focus();
                 }}
+                testID="email-input"
               />
 
               <PasswordInput
@@ -122,9 +133,7 @@ const LoginScreen: FC = () => {
               />
 
               <TouchableOpacity onPress={() => {}}>
-                <ManropeText
-                  style={[styles.forgotPassword, styles.forgotPasswordColor]}
-                >
+                <ManropeText style={styles.forgotPassword}>
                   Forgot Password?
                 </ManropeText>
               </TouchableOpacity>
@@ -133,12 +142,18 @@ const LoginScreen: FC = () => {
                 title="Continue"
                 style={styles.continueButton}
                 onPress={handleSubmit}
+                loading={loading}
+                disabled={loading}
+                testID="continue-button"
               />
+              {errors.api && (
+                <ManropeText style={styles.apiError}>{errors.api}</ManropeText>
+              )}
             </>
           </View>
 
           <View style={styles.footer}>
-            <ManropeText style={[styles.dividerText, styles.dividerTextColor]}>
+            <ManropeText style={styles.dividerText}>
               Or continue with
             </ManropeText>
 
@@ -157,11 +172,11 @@ const LoginScreen: FC = () => {
             />
 
             <View style={styles.loginContainer}>
-              <ManropeText style={[styles.loginText, styles.loginTextColor]}>
+              <ManropeText style={styles.loginText}>
                 I don't have an account?
               </ManropeText>
               <ManropeText
-                style={[styles.loginLink, styles.loginLinkColor]}
+                style={styles.loginLink}
                 fontWeight="extraBold"
                 onPress={handleRegisterPress}
               >
@@ -179,8 +194,6 @@ const getStyles = (theme: ThemeType) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
-    },
-    safeAreaBackground: {
       backgroundColor: theme.colors.background.primary,
     },
     keyboardAvoiding: {
@@ -197,22 +210,16 @@ const getStyles = (theme: ThemeType) =>
       borderRadius: 16,
     },
     title: {
-      fontSize: 40,
+      fontSize: scale(38),
       marginTop: 20,
       marginBottom: 15,
+      lineHeight: scale(48),
     },
     subtitle: {
-      fontSize: 16,
-    },
-    subtitleColor: {
+      fontSize: scale(15),
+      lineHeight: scale(21),
+      marginLeft: 4,
       color: theme.colors.text.muted,
-    },
-    input: {
-      width: '100%',
-      marginTop: 20,
-    },
-    inputOutline: {
-      borderRadius: 12,
     },
     continueButton: {
       width: '100%',
@@ -225,8 +232,6 @@ const getStyles = (theme: ThemeType) =>
     dividerText: {
       marginBottom: 20,
       fontSize: 16,
-    },
-    dividerTextColor: {
       color: theme.colors.neutral.grey,
     },
     socialButton: {
@@ -240,20 +245,21 @@ const getStyles = (theme: ThemeType) =>
       marginTop: 5,
       marginBottom: 10,
     },
-    loginText: {},
-    loginTextColor: {
+    loginText: {
       color: theme.colors.text.muted,
     },
-    loginLink: {},
-    loginLinkColor: {
+    loginLink: {
       color: theme.colors.brand.primary,
     },
     forgotPassword: {
       textAlign: 'right',
       marginTop: 5,
-    },
-    forgotPasswordColor: {
       color: theme.colors.neutral.grey,
+    },
+    apiError: {
+      color: theme.colors.feedback.error,
+      textAlign: 'center',
+      marginTop: 10,
     },
   });
 

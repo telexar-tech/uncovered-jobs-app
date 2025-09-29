@@ -4,13 +4,9 @@ export type AuthStackParamList = {
   Intro: undefined;
   Login: undefined;
   Register: undefined;
-};
-
-export type RootStackParamList = {
-  Auth: NavigatorScreenParams<AuthStackParamList>;
+  ForgotPassword: undefined;
   Subscribe: undefined;
   Category: undefined;
-  App: NavigatorScreenParams<BottomTabParamList>;
 };
 
 export type BottomTabParamList = {
@@ -18,4 +14,9 @@ export type BottomTabParamList = {
   "My Jobs": undefined;
   Message: undefined;
   Profile: undefined;
+};
+
+export type RootStackParamList = {
+  Auth: NavigatorScreenParams<AuthStackParamList>;
+  App: NavigatorScreenParams<BottomTabParamList>;
 };

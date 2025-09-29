@@ -1,124 +1,216 @@
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFormik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import {
-  Image,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  View,
 } from 'react-native';
+import { isValidNumber } from 'react-native-phone-entry';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppleIcon, GoogleIcon } from '../assets/icons';
-import Button from '../components/Button';
-import { EmailInput } from '../components/FormInputs';
-import LexendText from '../components/LexendText';
-import ManropeText from '../components/ManropeText';
+import * as Yup from 'yup';
+import StepEmail from '../components/Registration/StepEmail';
 import StepOnboard from '../components/Registration/StepOnboard';
 import StepPassword from '../components/Registration/StepPassword';
 import StepPersonalInfo from '../components/Registration/StepPersonalInfo';
 import StepVerification from '../components/Registration/StepVerification';
 import { ThemeType } from '../constants/theme';
 import { useTheme } from '../context/ThemeContext';
+import { register, sendOtp, verifyOtp } from '../services/auth';
 
-type AuthStackParamList = {
-  Login: undefined;
+const REGISTRATION_STEPS = {
+  EMAIL: 1,
+  PERSONAL_INFO: 2,
+  VERIFICATION: 3,
+  PASSWORD: 4,
+  ONBOARD: 5,
 };
+
+const stepSchemas = [
+  Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+  }),
+  Yup.object().shape({
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    phoneNumber: Yup.string()
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', function (value) {
+        return isValidNumber(value, '');
+      }),
+    address: Yup.string().required('Address is required'),
+  }),
+  Yup.object().shape({
+    otp: Yup.string()
+      .length(6, 'OTP must be 6 digits')
+      .required('OTP is required'),
+  }),
+  Yup.object().shape({
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], 'Passwords must match')
+      .required('Confirm password is required'),
+  }),
+];
 
 const RegisterScreen: FC = () => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const [currentStep, setCurrentStep] = useState(REGISTRATION_STEPS.EMAIL);
 
-  const [email, setEmail] = useState('');
-  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [otp, setOtp] = useState('');
+  const initialValues = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    address: '',
+    password: '',
+    confirmPassword: '',
+    otp: '',
+  };
 
-  const handleLoginPress = () => {
-    navigation.navigate('Login');
+  const handleSendOtp = async () => {
+    try {
+      setLoading(true);
+      await sendOtp(formik.values.email);
+      setCurrentStep(REGISTRATION_STEPS.VERIFICATION);
+    } catch (error: any) {
+      Alert.alert('OTP Sending Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      setLoading(true);
+      await verifyOtp(formik.values.email, formik.values.otp);
+      setCurrentStep(REGISTRATION_STEPS.PASSWORD);
+    } catch (error: any) {
+      Alert.alert('OTP Verification Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      setLoading(true);
+      await register(formik.values);
+      setCurrentStep(REGISTRATION_STEPS.ONBOARD);
+    } catch (error: any) {
+      Alert.alert('User Registration Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: stepSchemas[currentStep - 1],
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: () => handleFormSubmit(),
+  });
+
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+    validateField,
+    isValid,
+  } = formik;
+
+  const handleFormSubmit = async () => {
+    switch (currentStep) {
+      case REGISTRATION_STEPS.EMAIL:
+        setCurrentStep(REGISTRATION_STEPS.PERSONAL_INFO);
+        break;
+      case REGISTRATION_STEPS.PERSONAL_INFO:
+        await handleSendOtp();
+        break;
+      case REGISTRATION_STEPS.VERIFICATION:
+        await handleVerifyOtp();
+        break;
+      case REGISTRATION_STEPS.PASSWORD:
+        await handleRegister();
+        break;
+      default:
+        break;
+    }
   };
 
   const handleBackPress = () => {
-    setStep(prev => (prev > 1 ? prev - 1 : 1));
-  };
-
-  const handleNext = () => {
-    setStep(prev => prev + 1);
+    if (currentStep > REGISTRATION_STEPS.EMAIL) {
+      setCurrentStep(prev => prev - 1);
+    }
   };
 
   const renderStep = () => {
-    switch (step) {
-      case 1:
+    switch (currentStep) {
+      case REGISTRATION_STEPS.EMAIL:
         return (
-          <View>
-            <Image
-              source={require('../assets/images/auth-bg.png')}
-              style={styles.headerImage}
-              resizeMode="contain"
-            />
-
-            <LexendText fontWeight="bold" style={styles.title}>
-              {`Let's Register\nyou!`}
-            </LexendText>
-            <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
-              Register your details with on your own email
-            </ManropeText>
-
-            <EmailInput value={email} onChangeText={setEmail} />
-
-            <Button
-              title="Continue"
-              style={styles.continueButton}
-              onPress={handleNext}
-            />
-          </View>
+          <StepEmail
+            email={values.email}
+            error={errors.email}
+            touched={touched.email}
+            handleChange={text => setFieldValue('email', text, true)}
+            handleBlur={() => {
+              formik.setFieldTouched('email');
+              validateField('email');
+            }}
+            onSubmit={handleSubmit}
+          />
         );
-      case 2:
+      case REGISTRATION_STEPS.PERSONAL_INFO:
         return (
           <StepPersonalInfo
             handleBackPress={handleBackPress}
-            handleNext={handleNext}
-            firstName={firstName}
-            setFirstName={setFirstName}
-            lastName={lastName}
-            setLastName={setLastName}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
-            address={address}
-            setAddress={setAddress}
+            values={values}
+            errors={errors}
+            touched={touched}
+            onSubmit={handleSubmit}
+            setFieldValue={setFieldValue}
+            validateField={validateField}
+            isValid={isValid}
           />
         );
-      case 3:
+      case REGISTRATION_STEPS.VERIFICATION:
         return (
           <StepVerification
             handleBackPress={handleBackPress}
-            handleNext={handleNext}
-            otp={otp}
-            setOtp={setOtp}
+            otp={values.otp}
+            setOtp={text => setFieldValue('otp', text)}
+            sendOtp={handleSendOtp}
+            onSubmit={handleSubmit}
+            loading={loading}
           />
         );
-      case 4:
+      case REGISTRATION_STEPS.PASSWORD:
         return (
           <StepPassword
             handleBackPress={handleBackPress}
-            handleNext={handleNext}
-            password={password}
-            setPassword={setPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
+            onSubmit={handleSubmit}
+            values={values}
+            errors={errors}
+            touched={touched}
+            handleBlur={handleBlur}
+            handleChange={handleChange}
+            isValid={isValid}
+            loading={loading}
           />
         );
-      case 5:
+      case REGISTRATION_STEPS.ONBOARD:
         return <StepOnboard />;
       default:
         return null;
@@ -126,53 +218,16 @@ const RegisterScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, styles.safeAreaBackground]}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoiding}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
           {renderStep()}
-
-          {step === 1 && (
-            <View style={styles.footer}>
-              <ManropeText
-                style={[styles.dividerText, styles.dividerTextColor]}
-              >
-                Or continue with
-              </ManropeText>
-
-              <Button
-                title="Google Account"
-                buttonType="outline"
-                style={styles.socialButton}
-                icon={GoogleIcon}
-              />
-              <Button
-                title="Apple ID"
-                buttonType="outline"
-                style={styles.socialButton}
-                icon={AppleIcon}
-                iconColor={theme.colors.text.primary}
-              />
-
-              <View style={styles.loginContainer}>
-                <ManropeText style={[styles.loginText, styles.loginTextColor]}>
-                  Already have an account?
-                </ManropeText>
-                <ManropeText
-                  style={[styles.loginLink, styles.loginLinkColor]}
-                  fontWeight="extraBold"
-                  onPress={handleLoginPress}
-                >
-                  Login
-                </ManropeText>
-              </View>
-            </View>
-          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -183,8 +238,6 @@ const getStyles = (theme: ThemeType) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
-    },
-    safeAreaBackground: {
       backgroundColor: theme.colors.background.primary,
     },
     keyboardAvoiding: { flex: 1 },
@@ -192,67 +245,6 @@ const getStyles = (theme: ThemeType) =>
       flexGrow: 1,
       justifyContent: 'space-between',
       padding: 20,
-    },
-    headerImage: {
-      width: '100%',
-      height: 200,
-      borderRadius: 16,
-    },
-    title: {
-      fontSize: 40,
-      marginTop: 20,
-      marginBottom: 15,
-      lineHeight: 48,
-    },
-    subtitle: {
-      fontSize: 16,
-      marginLeft: 4,
-    },
-    subtitleColor: {
-      color: theme.colors.text.muted,
-    },
-    input: {
-      width: '100%',
-      marginTop: 20,
-    },
-    inputOutline: {
-      borderRadius: 12,
-    },
-    continueButton: {
-      width: '100%',
-      marginVertical: 10,
-    },
-    footer: {
-      alignItems: 'center',
-      width: '100%',
-    },
-    dividerText: {
-      marginBottom: 20,
-      fontSize: 16,
-    },
-    dividerTextColor: {
-      color: theme.colors.text.violet200,
-    },
-    socialButton: {
-      marginBottom: 10,
-      width: '100%',
-    },
-    loginContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 5,
-      marginTop: 5,
-      marginBottom: 10,
-    },
-    loginText: {},
-    loginTextColor: {
-      color: theme.colors.text.violet200,
-    },
-    loginLink: {
-      textDecorationLine: 'underline',
-    },
-    loginLinkColor: {
-      color: theme.colors.brand.primary,
     },
   });
 

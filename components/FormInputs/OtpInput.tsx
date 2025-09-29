@@ -7,9 +7,14 @@ import ManropeText from '../ManropeText';
 interface OtpInputProps {
   onOtpChange: (otp: string) => void;
   length?: number;
+  error?: boolean;
 }
 
-const OtpInput: React.FC<OtpInputProps> = ({ onOtpChange, length = 4 }) => {
+const OtpInput: React.FC<OtpInputProps> = ({
+  onOtpChange,
+  length = 4,
+  error = false,
+}) => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -40,6 +45,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ onOtpChange, length = 4 }) => {
                 styles.pinCodeContainer,
                 styles.pinCodeBorderColor,
                 isFocused && styles.pinCodeFocusedBorderColor,
+                error && styles.pinCodeErrorBorderColor,
               ]}
             >
               <ManropeText
@@ -77,8 +83,9 @@ const getStyles = (theme: ThemeType) =>
     inputContainer: {
       width: '100%',
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 10,
+      justifyContent: 'space-around',
+      margin: 10,
+      gap:4
     },
     hiddenInput: {
       position: 'absolute',
@@ -87,8 +94,8 @@ const getStyles = (theme: ThemeType) =>
       opacity: 0,
     },
     pinCodeContainer: {
-      width: 54,
-      height: 54,
+      width:50,
+      aspectRatio:1,
       borderRadius: 12,
       borderWidth: 1,
       backgroundColor: 'transparent',
@@ -100,6 +107,9 @@ const getStyles = (theme: ThemeType) =>
     },
     pinCodeFocusedBorderColor: {
       borderColor: theme.colors.text.primary,
+    },
+    pinCodeErrorBorderColor: {
+      borderColor: 'red',
     },
     pinCodeText: {
       fontSize: 24,

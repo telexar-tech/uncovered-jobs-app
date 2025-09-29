@@ -1,5 +1,5 @@
-import { RouteProp } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 import {
   ExploreIcon,
@@ -44,18 +44,14 @@ const BottomTabNavigator = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarIcon: ({ color, size }) => renderTabBarIcon(route, color, size),
+        tabBarIcon: ({ color, size }) => renderTabBarIcon(route, color, size ),
         tabBarActiveTintColor: theme.colors.brand.primary,
         tabBarInactiveTintColor: theme.colors.text.muted,
         tabBarStyle: {
+          height:60,
           backgroundColor: theme.colors.background.primary,
           borderTopWidth: 0,
           elevation: 0,
-          paddingTop: 5,
-          marginBottom: 5,
-        },
-        tabBarLabelStyle: {
-          marginTop: 5,
         },
       })}
       backBehavior="none"

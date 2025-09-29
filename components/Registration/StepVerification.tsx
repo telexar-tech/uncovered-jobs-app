@@ -1,8 +1,9 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ThemeType } from '../../constants/theme';
 import { useTheme } from '../../context/ThemeContext';
+import { scale } from '../../utils/scale';
 import Button from '../Button';
 import { OtpInput } from '../FormInputs';
 import LexendText from '../LexendText';
@@ -10,24 +11,49 @@ import ManropeText from '../ManropeText';
 
 type StepVerificationProps = {
   handleBackPress: () => void;
-  handleNext: () => void;
+  onSubmit: () => void;
   otp: string;
   setOtp: (otp: string) => void;
+  sendOtp: () => void;
+  loading?: boolean;
 };
+
+const RESEND_OTP_TIMER_SECONDS = 30;
 
 const StepVerification: FC<StepVerificationProps> = ({
   handleBackPress,
-  handleNext,
+  onSubmit,
+  otp,
   setOtp,
+  sendOtp,
+  loading,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+  const [counter, setCounter] = useState(RESEND_OTP_TIMER_SECONDS);
+
+  useEffect(() => {
+    if (counter === 0) return;
+
+    const timerId = setInterval(() => {
+      setCounter(prevCounter => prevCounter - 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [counter]);
+
+  const handleResendOtp = () => {
+    if (counter > 0) return;
+
+    sendOtp();
+    setCounter(RESEND_OTP_TIMER_SECONDS);
+  };
 
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackPress}>
+          <TouchableOpacity onPress={handleBackPress} testID="back-button">
             <Icon
               name="chevron-back-outline"
               size={24}
@@ -40,33 +66,38 @@ const StepVerification: FC<StepVerificationProps> = ({
           <LexendText fontWeight="bold" style={styles.title}>
             {`Verify mobile number`}
           </LexendText>
-          <ManropeText style={[styles.subtitle, styles.subtitleColor]}>
+          <ManropeText style={styles.subtitle}>
             Enter OTP that you received
           </ManropeText>
 
           <View style={styles.otpContainer}>
-            <OtpInput onOtpChange={setOtp} length={5} />
+            <OtpInput onOtpChange={setOtp} length={6} />
           </View>
 
           <View style={styles.resendContainer}>
-            <ManropeText style={[styles.resendText, styles.resendTextColor]}>
+            <ManropeText style={styles.resendText}>
               Didn't get a code?
             </ManropeText>
-            <ManropeText
-              style={[styles.resendLink, styles.resendLinkColor]}
-              fontWeight="extraBold"
-              onPress={() => {}}
+            <TouchableOpacity
+              testID="resend-button"
+              onPress={handleResendOtp}
+              disabled={counter > 0}
             >
-              Click to resend
-            </ManropeText>
+              <ManropeText style={styles.resendLink} fontWeight="extraBold">
+                Click to resend {counter > 0 ? `(${counter})` : ''}
+              </ManropeText>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
 
       <Button
+        testID="verify-button"
         title="Verify"
         style={styles.continueButton}
-        onPress={handleNext}
+        onPress={onSubmit}
+        disabled={otp === '' || otp.length !== 6}
+        loading={loading}
       />
     </View>
   );
@@ -84,16 +115,14 @@ const getStyles = (theme: ThemeType) =>
       alignItems: 'center',
     },
     title: {
-      fontSize: 40,
+      fontSize: scale(38),
       marginTop: 20,
       marginBottom: 15,
-      lineHeight: 48,
+      lineHeight: scale(40),
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: scale(15),
       marginLeft: 4,
-    },
-    subtitleColor: {
       color: theme.colors.text.secondary,
     },
     otpContainer: {
@@ -107,12 +136,10 @@ const getStyles = (theme: ThemeType) =>
       marginTop: 5,
       marginBottom: 10,
     },
-    resendText: {},
-    resendTextColor: {
+    resendText: {
       color: theme.colors.text.muted,
     },
-    resendLink: {},
-    resendLinkColor: {
+    resendLink: {
       color: theme.colors.brand.primary,
     },
     continueButton: {
